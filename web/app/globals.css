@@ -199,6 +199,12 @@ h3 {
   border-bottom-color: var(--primary);
 }
 
+.nav-actions-placeholder {
+  display: inline-block;
+  min-width: 180px;
+  height: 42px;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -879,9 +885,16 @@ h3 {
 }
 
 .quiz legend {
+  float: left;
+  width: 100%;
   font-weight: 700;
   color: var(--ink);
-  padding: 0 6px;
+  margin-bottom: 10px;
+  line-height: 1.4;
+}
+
+.quiz fieldset {
+  padding: 18px 20px 12px;
 }
 
 .quiz label.choice {
@@ -908,6 +921,26 @@ h3 {
   align-items: center;
   flex-wrap: wrap;
   margin-top: 18px;
+}
+
+/* ---------- Page heads and list rows ---------- */
+
+.page-head h1 {
+  font-size: clamp(28px, 3.4vw, 38px);
+}
+
+.page-head .hint {
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 62ch;
+}
+
+.empty {
+  color: var(--muted);
+  padding: 22px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  margin-top: 12px;
 }
 
 /* ---------- Responsive ---------- */
@@ -944,6 +977,16 @@ h3 {
 @media (max-width: 640px) {
   .section {
     padding: 56px 0;
+  }
+
+  .skill-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .skill-item > div:last-child {
+    width: 100%;
+    justify-content: space-between;
   }
 
   .features {

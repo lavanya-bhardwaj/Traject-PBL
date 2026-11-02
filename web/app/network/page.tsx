@@ -25,7 +25,7 @@ async function Network() {
 
       <h2 style={{ marginTop: 28, fontSize: 20 }}>Requests for you</h2>
       {incoming.length === 0 ? (
-        <p style={{ marginTop: 10 }}>No pending requests.</p>
+        <p className="empty">No pending requests.</p>
       ) : (
         <ul className="skill-list">
           {incoming.map((person) => (
@@ -51,7 +51,7 @@ async function Network() {
 
       <h2 style={{ marginTop: 32, fontSize: 20 }}>Connections</h2>
       {connected.length === 0 ? (
-        <p style={{ marginTop: 10 }}>No connections yet. Find people through recruiter search or their profiles.</p>
+        <p className="empty">No connections yet. Find people through recruiter search or their profiles.</p>
       ) : (
         <ul className="skill-list">
           {connected.map((person) => (
@@ -67,7 +67,7 @@ async function Network() {
 
       <h2 style={{ marginTop: 32, fontSize: 20 }}>Sent requests</h2>
       {outgoing.length === 0 ? (
-        <p style={{ marginTop: 10 }}>No requests waiting.</p>
+        <p className="empty">No requests waiting.</p>
       ) : (
         <ul className="skill-list">
           {outgoing.map((person) => (

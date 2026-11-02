@@ -76,11 +76,11 @@ The tests cover the scoring formulas, grading, validation rules, the AI reply pa
 - `web/app/` pages and server actions (Next.js App Router)
 - `web/lib/` scoring, grading, AI client, database and session code
 - `web/db/migrations/` schema changes, applied in order
-- `web/db/seed/` skill taxonomy and draft role data
+- `web/db/seed/` skill taxonomy, team courses and reviewed roles
 
 ## Known gaps
 
-- Course links are not in the database yet, so learning paths do not link to courses.
-- Role requirements are drafts and need review before any demo.
+- Two course URLs point to the same Coursera page, and several NPTEL and Skill India links go to the provider's homepage. These need course-specific links.
+- The question bank is starter content and needs review.
 - Unknown skill URLs return HTTP 200 with a not-found page instead of 404.
-- The question bank is starter content.
+- Candidate search is open to any signed-in user; there is no recruiter role yet.

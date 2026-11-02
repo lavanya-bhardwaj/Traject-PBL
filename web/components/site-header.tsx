@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { Logo } from "./logo";
 import { NavLinks } from "./nav-links";
 import { NAV_LINKS } from "./nav-data";
+import { AuthNav } from "./auth-nav";
 
 export function SiteHeader() {
   return (
@@ -28,12 +29,7 @@ export function SiteHeader() {
         </Suspense>
 
         <div className="nav-actions">
-          <Link href="/login" className="btn btn-outline">
-            Log In
-          </Link>
-          <Link href="/signup" className="btn btn-primary">
-            Get Started →
-          </Link>
+          <AuthNav />
         </div>
       </div>
     </header>

@@ -27,10 +27,10 @@ async function Skills() {
 
   return (
     <main className="page container">
-      <h1>Your skills</h1>
-      <p className="hint" style={{ color: "var(--muted)", marginTop: 8 }}>
-        Levels come from short checks you pass, not from self-rating.
-      </p>
+      <div className="page-head">
+        <h1>Your skills</h1>
+        <p className="hint">Levels come from short checks you pass, not from self-rating.</p>
+      </div>
 
       <div className="card" style={{ padding: 22, marginTop: 24, maxWidth: 560 }}>
         <div style={{ color: "var(--muted)", fontSize: 14 }}>Profile score</div>

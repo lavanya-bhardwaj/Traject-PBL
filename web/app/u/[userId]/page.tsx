@@ -57,7 +57,7 @@ async function PublicProfile({ params }: { params: Promise<{ userId: string }> }
 
       <h2 style={{ marginTop: 32, fontSize: 22 }}>Verified skills</h2>
       {verified.length === 0 ? (
-        <p style={{ marginTop: 10 }}>No verified skills yet.</p>
+        <p className="empty">No verified skills yet.</p>
       ) : (
         <ul className="skill-list">
           {verified.map((skill) => (
