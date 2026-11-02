@@ -8,14 +8,18 @@ export type SkillWithLevel = {
   correct: number | null;
   total: number | null;
   takenAt: Date | null;
+  claimed: boolean;
 };
 
 // Latest assessment per skill for one user. Skills never assessed have null fields.
+// claimed is true when the user has described this skill, whether or not it is verified.
 export async function listSkillsForUser(userId: string): Promise<SkillWithLevel[]> {
   return query<SkillWithLevel>(
     `SELECT s.id, s.name, s.category,
-            a.level, a.correct, a.total, a.taken_at AS "takenAt"
+            a.level, a.correct, a.total, a.taken_at AS "takenAt",
+            (c.skill_id IS NOT NULL) AS claimed
        FROM skills s
+       LEFT JOIN skill_claims c ON c.user_id = $1 AND c.skill_id = s.id
        LEFT JOIN LATERAL (
          SELECT level, correct, total, taken_at
            FROM assessments

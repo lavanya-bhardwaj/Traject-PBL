@@ -43,6 +43,12 @@ async function Skills() {
         </div>
       </div>
 
+      <p style={{ marginTop: 16 }}>
+        <Link href="/skills/describe" className="btn btn-outline">
+          Describe your experience
+        </Link>
+      </p>
+
       <ul className="skill-list">
         {skills.map((skill) => (
           <li key={skill.id} className="card skill-item">
@@ -52,7 +58,11 @@ async function Skills() {
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", justifyContent: "flex-end" }}>
               {skill.level === null ? (
-                <span className="meta">Not checked yet</span>
+                skill.claimed ? (
+                  <span className="meta" style={{ color: "#b45309" }}>Claimed · not verified</span>
+                ) : (
+                  <span className="meta">Not checked yet</span>
+                )
               ) : (
                 <span className="level-pill">
                   Level {skill.level} of 5 · {skill.correct}/{skill.total} correct
