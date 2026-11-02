@@ -25,6 +25,18 @@ async function Dashboard() {
           <Link href="/skills" className="btn btn-primary">
             Check your skills
           </Link>
+          <Link href="/roles" className="btn btn-outline">
+            Explore roles
+          </Link>
+          <Link href="/profile" className="btn btn-outline">
+            Edit profile
+          </Link>
+          <Link href="/network" className="btn btn-outline">
+            Network
+          </Link>
+          <Link href="/search" className="btn btn-outline">
+            Find candidates
+          </Link>
           <form action={logout}>
             <button type="submit" className="btn btn-outline">
               Log out
