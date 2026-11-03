@@ -1,34 +1,41 @@
 "use client";
 
 import { useActionState } from "react";
-import { submitAssessment } from "@/app/actions/skills";
+import { answerQuestion } from "@/app/actions/skills";
 
 type PublicQuestion = { id: string; prompt: string; choices: string[] };
 
-export function QuizForm({ skillId, questions }: { skillId: string; questions: PublicQuestion[] }) {
-  const [state, action, pending] = useActionState(submitAssessment, undefined);
+export function QuizForm({
+  skillId,
+  question,
+  number,
+}: {
+  skillId: string;
+  question: PublicQuestion;
+  number: number;
+}) {
+  const [state, action, pending] = useActionState(answerQuestion, undefined);
 
   return (
-    <form action={action} className="quiz">
+    <form action={action} className="quiz" key={question.id}>
       <input type="hidden" name="skillId" value={skillId} />
-      {questions.map((question, index) => (
-        <fieldset key={question.id}>
-          <legend>
-            {index + 1}. {question.prompt}
-          </legend>
-          {question.choices.map((choice, choiceIndex) => (
-            <label key={choiceIndex} className="choice">
-              <input type="radio" name={`answer-${question.id}`} value={choiceIndex} required />
-              {choice}
-            </label>
-          ))}
-        </fieldset>
-      ))}
+      <input type="hidden" name="questionId" value={question.id} />
+      <fieldset>
+        <legend>
+          {number}. {question.prompt}
+        </legend>
+        {question.choices.map((choice, choiceIndex) => (
+          <label key={choiceIndex} className="choice">
+            <input type="radio" name="choice" value={choiceIndex} required />
+            {choice}
+          </label>
+        ))}
+      </fieldset>
 
       {state?.message && <p className="alert" role="alert">{state.message}</p>}
 
       <button className="btn btn-primary btn-large" disabled={pending} type="submit">
-        {pending ? "Checking..." : "Submit answers"}
+        {pending ? "Checking..." : "Submit answer"}
       </button>
     </form>
   );

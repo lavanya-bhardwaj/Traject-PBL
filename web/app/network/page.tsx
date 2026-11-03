@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { listNetwork } from "@/lib/social/connections";
 import { acceptRequest, removeConnection } from "@/app/actions/connections";
+import { EmptyState } from "@/components/empty-state";
 
 export default function NetworkPage() {
   return (
@@ -16,6 +17,7 @@ export default function NetworkPage() {
 async function Network() {
   const user = await getCurrentUser();
   if (!user) redirect("/login");
+  if (user.role !== "student") notFound();
 
   const { incoming, outgoing, connected } = await listNetwork(user.id);
 
@@ -25,7 +27,12 @@ async function Network() {
 
       <h2 style={{ marginTop: 28, fontSize: 20 }}>Requests for you</h2>
       {incoming.length === 0 ? (
-        <p className="empty">No pending requests.</p>
+        <EmptyState
+          title="No requests waiting for you"
+          body="When someone wants to connect, their request appears here. You can also reach out to people first."
+          actionHref="/search"
+          actionLabel="Find people"
+        />
       ) : (
         <ul className="skill-list">
           {incoming.map((person) => (
@@ -51,7 +58,12 @@ async function Network() {
 
       <h2 style={{ marginTop: 32, fontSize: 20 }}>Connections</h2>
       {connected.length === 0 ? (
-        <p className="empty">No connections yet. Find people through recruiter search or their profiles.</p>
+        <EmptyState
+          title="Build your professional network"
+          body="Connect with students, alumni, mentors, and recruiters who share your career interests."
+          actionHref="/search"
+          actionLabel="Discover people"
+        />
       ) : (
         <ul className="skill-list">
           {connected.map((person) => (
@@ -67,7 +79,12 @@ async function Network() {
 
       <h2 style={{ marginTop: 32, fontSize: 20 }}>Sent requests</h2>
       {outgoing.length === 0 ? (
-        <p className="empty">No requests waiting.</p>
+        <EmptyState
+          title="No requests sent"
+          body="Requests you send to people appear here until they accept. Open a profile to send one."
+          actionHref="/search"
+          actionLabel="Find people"
+        />
       ) : (
         <ul className="skill-list">
           {outgoing.map((person) => (

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { getSkill, listSkillsForUser } from "@/lib/skills";
 import { searchCandidates } from "@/lib/profile";
@@ -21,6 +21,8 @@ export default function SearchPage({
 async function Search({ searchParams }: { searchParams: Promise<{ skill?: string; min?: string }> }) {
   const viewer = await getCurrentUser();
   if (!viewer) redirect("/login");
+  // Student-to-student search. Employers use their own candidate search, which only shows opted-in students.
+  if (viewer.role !== "student") notFound();
 
   const { skill: skillParam, min: minParam } = await searchParams;
   const allSkills = await listSkillsForUser(viewer.id);
