@@ -85,18 +85,21 @@ export default function HomePage() {
             <div className="orbit" />
             <span className="spark" style={{ top: "6%", right: "16%" }} />
             <span className="spark" style={{ top: "22%", right: "6%", width: 10, height: 10 }} />
-            <div className="match-card">
-              <div className="icon-box">
-                <BriefcaseIcon size={36} color="#fff" />
-              </div>
-              <div className="score-label">Your Career Match</div>
-              <div className="score">92%</div>
-              <div className="score-label">Match Score</div>
-              <div className="role">Software Development Engineer</div>
-              <div className="meta">Tech · Full-time · Remote friendly</div>
-              <span className="btn btn-primary">Explore Role →</span>
-              <div className="meta" style={{ marginTop: 12, marginBottom: 0, fontSize: 12 }}>
-                Example score
+            <div className="phone">
+              <div className="phone-screen">
+                <span className="phone-notch" />
+                <div className="phone-greeting">Hi, Ananya</div>
+                <div className="phone-sub">Your top match this week</div>
+                <div className="phone-ring">
+                  <div className="phone-ring-inner">
+                    <strong>92%</strong>
+                    <span>match</span>
+                  </div>
+                </div>
+                <div className="phone-role">Software Development Engineer</div>
+                <div className="phone-meta">Tech · Full-time · Remote friendly</div>
+                <span className="btn btn-primary phone-btn">Explore Role →</span>
+                <div className="phone-caption">Sample profile</div>
               </div>
             </div>
           </div>

@@ -304,58 +304,109 @@ h3 {
   opacity: 0.5;
 }
 
-.match-card {
+.phone {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 380px;
+  width: 290px;
+  height: 540px;
   transform: translate(-50%, -50%) rotate(-6deg);
-  background: #fff;
-  border-radius: 24px;
-  padding: 28px 28px 24px;
+  background: var(--ink);
+  border-radius: 44px;
+  padding: 12px;
   box-shadow: var(--shadow-lg);
+}
+
+.phone-screen {
+  position: relative;
+  height: 100%;
+  background: #fff;
+  border-radius: 34px;
+  padding: 50px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
+  overflow: hidden;
 }
 
-.match-card .icon-box {
-  width: 74px;
-  height: 74px;
-  border-radius: 20px;
-  margin: 0 auto 12px;
-  background: var(--primary);
-  display: grid;
-  place-items: center;
-  box-shadow: 0 12px 24px rgba(91, 61, 245, 0.35);
+.phone-notch {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 24px;
+  background: var(--ink);
+  border-radius: 14px;
 }
 
-.match-card .score {
-  font-size: 56px;
+.phone-greeting {
+  font-size: 26px;
   font-weight: 800;
   color: var(--ink);
-  line-height: 1;
 }
 
-.match-card .score-label {
-  color: var(--text);
-  font-size: 15px;
-  margin-bottom: 14px;
-}
-
-.match-card .role {
-  font-weight: 700;
-  color: var(--ink);
-  font-size: 18px;
-}
-
-.match-card .meta {
+.phone-sub {
   color: var(--muted);
   font-size: 14px;
+  margin: 4px 0 22px;
+}
+
+.phone-ring {
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+  background: conic-gradient(var(--primary) 0 92%, #ece8ff 92% 100%);
+  display: grid;
+  place-items: center;
+}
+
+.phone-ring-inner {
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-ring-inner strong {
+  font-size: 38px;
+  line-height: 1;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.phone-ring-inner span {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.phone-role {
+  margin-top: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  font-size: 17px;
+}
+
+.phone-meta {
+  color: var(--muted);
+  font-size: 13px;
   margin: 6px 0 18px;
 }
 
-.match-card .btn {
+.phone-btn {
   width: 100%;
   justify-content: center;
+}
+
+.phone-caption {
+  margin-top: auto;
+  color: var(--muted);
+  font-size: 12px;
 }
 
 .orbit {
@@ -1046,11 +1097,18 @@ h3 {
     font-size: 14px;
   }
 
-  .match-card {
-    width: 300px;
+  .phone {
+    width: 260px;
+    height: 480px;
   }
 
-  .match-card .score {
-    font-size: 44px;
+  .phone-ring {
+    width: 136px;
+    height: 136px;
+  }
+
+  .phone-ring-inner {
+    width: 108px;
+    height: 108px;
   }
 }
