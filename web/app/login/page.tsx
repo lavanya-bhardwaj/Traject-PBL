@@ -25,6 +25,18 @@ async function Login() {
           New here? <Link href="/signup">Create an account</Link>
         </p>
       </div>
+
+      <section className="employer-callout" aria-labelledby="employer-callout-heading">
+        <h2 id="employer-callout-heading">Looking to hire students?</h2>
+        <p className="employer-callout-text">
+          Discover skilled, verified candidates and recruit based on demonstrated competencies.
+        </p>
+        <div className="employer-callout-actions">
+          <Link href="/employer/register" className="btn btn-primary employer-callout-btn">Register as an Employer</Link>
+          <Link href="/employer/login" className="btn btn-outline employer-callout-btn">Employer Login</Link>
+        </div>
+        <p className="employer-callout-note">Employer accounts are separate from student accounts.</p>
+      </section>
     </main>
   );
 }

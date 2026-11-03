@@ -39,7 +39,13 @@ export function PathButton({ roleId }: { roleId: string }) {
                     ))}
                   </ul>
                 ) : (
-                  <p className="hint" style={{ color: "var(--muted)", marginTop: 4 }}>No course in our list covers this yet.</p>
+                  <p className="hint" style={{ color: "var(--muted)", marginTop: 4 }}>
+                    No course in our list covers this yet.{" "}
+                    <a href={`/skills/${step.skillId}`} style={{ color: "var(--primary)", fontWeight: 600 }}>
+                      Take the {step.name} check
+                    </a>{" "}
+                    to track your progress.
+                  </p>
                 )}
               </li>
             ))}
