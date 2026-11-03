@@ -82,5 +82,4 @@ The tests cover the scoring formulas, grading, validation rules, the AI reply pa
 
 - Two course URLs point to the same Coursera page, and several NPTEL and Skill India links go to the provider's homepage. These need course-specific links.
 - The question bank is starter content and needs review.
-- Unknown skill URLs return HTTP 200 with a not-found page instead of 404.
 - Candidate search is open to any signed-in user; there is no recruiter role yet.

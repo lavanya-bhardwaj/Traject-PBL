@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { query } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
@@ -8,6 +9,11 @@ import { isUuid } from "@/lib/validation";
 
 // Each action checks the current user and the relationship on the server, so a crafted
 // request cannot accept a request that was not sent to this user.
+
+// Connection state shows on profile, network and search pages, so refresh the whole app.
+function refreshConnections() {
+  revalidatePath("/", "layout");
+}
 
 async function otherUserId(formData: FormData): Promise<string | null> {
   const value = formData.get("otherId");
@@ -24,6 +30,7 @@ export async function sendRequest(formData: FormData): Promise<void> {
     "INSERT INTO connections (requester_id, addressee_id, status) VALUES ($1, $2, 'pending')",
     [user.id, otherId],
   );
+  refreshConnections();
 }
 
 export async function acceptRequest(formData: FormData): Promise<void> {
@@ -37,6 +44,7 @@ export async function acceptRequest(formData: FormData): Promise<void> {
       WHERE requester_id = $1 AND addressee_id = $2 AND status = 'pending'`,
     [otherId, user.id],
   );
+  refreshConnections();
 }
 
 // Removes a pending or accepted connection, or withdraws a request the user sent.
@@ -51,4 +59,5 @@ export async function removeConnection(formData: FormData): Promise<void> {
       WHERE (requester_id = $1 AND addressee_id = $2) OR (requester_id = $2 AND addressee_id = $1)`,
     [user.id, otherId],
   );
+  refreshConnections();
 }

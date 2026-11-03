@@ -6,8 +6,8 @@ import { getSkill } from "@/lib/skills";
 import { QUESTIONS } from "@/lib/assessments/questions";
 import { QuizForm } from "./quiz-form";
 
-// The known skills are prerendered. Any other ID is checked before streaming starts,
-// so an unknown skill returns a real 404 status.
+// The known skills are prerendered. proxy.ts returns the 404 status for any other ID;
+// the check here is a fallback.
 export function generateStaticParams() {
   return Object.keys(QUESTIONS).map((skillId) => ({ skillId }));
 }
