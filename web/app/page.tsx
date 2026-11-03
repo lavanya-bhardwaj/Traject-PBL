@@ -181,7 +181,7 @@ export default function HomePage() {
             </aside>
             <div className="preview-main">
               <h4>Hey there!</h4>
-              <div className="sub">Here&apos;s your personalised career snapshot</div>
+              <div className="sub">Sample snapshot. Your own scores appear after your checks.</div>
               <div className="feature-banner">
                 <div className="tag">Top Career Match</div>
                 <div className="title">Software Development Engineer</div>
