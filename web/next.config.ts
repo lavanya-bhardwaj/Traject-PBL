@@ -5,8 +5,9 @@ const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
   experimental: {
-    // Resume uploads are up to 2 MB; the default Server Action limit is 1 MB.
-    // Employer registration allows four 2 MB documents; resume uploads allow one.
+    agentUpgrade: "security",
+    // Resume uploads are up to 2 MB; default Server Action limit is 1 MB.
+    // Employer registration allows four 2 MB documents.
     serverActions: { bodySizeLimit: "9mb" },
   },
 };
