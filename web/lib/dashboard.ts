@@ -2,7 +2,7 @@
 // Nothing here is mocked: every number comes from the database or the existing scoring code.
 import { query } from "@/lib/db";
 import { profileSummary } from "@/lib/profile";
-import { listRoles, getRole } from "@/lib/roles";
+import { listRoleDetails } from "@/lib/roles";
 import { recommendRoles, type Recommendation } from "@/lib/resume/recommend";
 import { completionItems, completionPercent } from "@/lib/profile-completion";
 import type { Levels } from "@/lib/scoring/scoring";
@@ -37,8 +37,8 @@ export async function getDashboardData(
   );
   const claimed = new Set(claimedRows.map((row) => row.skill_id));
 
-  const roleList = await listRoles();
-  const details = (await Promise.all(roleList.map((r) => getRole(r.id)))).filter((r) => r !== null);
+  const details = await listRoleDetails();
+  const roleList = details;
   const recommendations = recommendRoles(details, levels, claimed);
 
   const bestRole = recommendations.reduce<{ title: string; match: number } | null>((best, rec) => {

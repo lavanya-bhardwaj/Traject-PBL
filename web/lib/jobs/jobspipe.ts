@@ -65,6 +65,8 @@ export async function searchJobsByTitle(title: string): Promise<JobSearchResult>
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({ job_title_or: [title], job_country_code_or: [COUNTRY], limit: PAGE_SIZE }),
       cache: "no-store",
+      // A slow API must not hold up the whole page.
+      signal: AbortSignal.timeout(5000),
     });
     if (!response.ok) return { ok: false, reason: "unavailable" };
     const jobs = parseJobs(await response.json());

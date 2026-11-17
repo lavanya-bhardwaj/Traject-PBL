@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { listRoles, getRole } from "@/lib/roles";
+import { listRoleDetails } from "@/lib/roles";
 import { verifiedLevels } from "@/lib/candidate-levels";
 import { recommendRoles, STATUS_LABEL } from "@/lib/resume/recommend";
 import { searchJobsByTitle, type JobPosting, type JobSearchResult } from "@/lib/jobs/jobspipe";
@@ -30,8 +30,7 @@ async function Jobs() {
   const levels = await verifiedLevels(user.id);
   const claimedRows = await query<{ skill_id: string }>("SELECT skill_id FROM skill_claims WHERE user_id = $1", [user.id]);
   const claimed = new Set(claimedRows.map((row) => row.skill_id));
-  const roles = await listRoles();
-  const details = (await Promise.all(roles.map((r) => getRole(r.id)))).filter((r) => r !== null);
+  const details = await listRoleDetails();
   const top = recommendRoles(details, levels, claimed).slice(0, 3);
 
   const results: JobSearchResult[] = await Promise.all(top.map((rec) => searchJobsByTitle(rec.title)));

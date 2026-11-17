@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { query } from "@/lib/db";
-import { listRoles, getRole } from "@/lib/roles";
+import { listRoleDetails } from "@/lib/roles";
 import { verifiedLevels } from "@/lib/candidate-levels";
 import { formatPercent, improveAction, recommendRoles, STATUS_LABEL } from "@/lib/resume/recommend";
 import { listInterests } from "@/lib/profile-sections";
@@ -27,9 +27,8 @@ async function Roles() {
   );
   const claimed = new Set(claimedRows.map((row) => row.skill_id));
 
-  const roles = await listRoles();
-  const details = (await Promise.all(roles.map((r) => getRole(r.id)))).filter((r) => r !== null);
-  const descriptions = Object.fromEntries(roles.map((r) => [r.id, r.description]));
+  const details = await listRoleDetails();
+  const descriptions = Object.fromEntries(details.map((r) => [r.id, r.description]));
   const recommendations = recommendRoles(details, levels, claimed);
   const interests = new Set(await listInterests(user.id));
 

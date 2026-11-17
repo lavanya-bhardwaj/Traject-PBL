@@ -4,7 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { query } from "@/lib/db";
 import { profileSummary } from "@/lib/profile";
-import { listRoles, getRole } from "@/lib/roles";
+import { listRoleDetails } from "@/lib/roles";
 import { listEntries, listInterests } from "@/lib/profile-sections";
 import { ENTRY_KINDS, type EntryKind } from "@/lib/profile-sections-validate";
 import { completionItems, completionPercent } from "@/lib/profile-completion";
@@ -62,8 +62,7 @@ async function Resume() {
     careerInterests: counts.interests,
   });
 
-  const roles = await listRoles();
-  const details = (await Promise.all(roles.map((r) => getRole(r.id)))).filter((r) => r !== null);
+  const details = await listRoleDetails();
   const recommendations = recommendRoles(details, levels, claimed);
 
   const entries = await listEntries(user.id);
