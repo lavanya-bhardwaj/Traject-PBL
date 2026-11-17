@@ -12,11 +12,15 @@ const scrypt = promisify(scryptCb) as (
 export const SESSION_COOKIE = "traject_session";
 const SESSION_DAYS = 7;
 
+export type UserRole = "student" | "employer" | "admin";
+
 export type CurrentUser = {
   id: string;
   email: string;
   name: string;
   headline: string;
+  role: UserRole;
+  emailVerified: boolean;
 };
 
 // Stored as "scrypt$<salt hex>$<hash hex>". A new salt is generated for every password.
@@ -65,14 +69,30 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   const token = cookieStore.get(SESSION_COOKIE)?.value;
   if (!token) return null;
 
-  const rows = await query<{ id: string; email: string; name: string; headline: string }>(
-    `SELECT u.id, u.email, u.name, u.headline
+  const rows = await query<{
+    id: string;
+    email: string;
+    name: string;
+    headline: string;
+    role: UserRole;
+    email_verified_at: Date | null;
+  }>(
+    `SELECT u.id, u.email, u.name, u.headline, u.role, u.email_verified_at
        FROM sessions s
        JOIN users u ON u.id = s.user_id
       WHERE s.id = $1 AND s.expires_at > now()`,
     [hashToken(token)],
   );
-  return rows[0] ?? null;
+  const row = rows[0];
+  if (!row) return null;
+  return {
+    id: row.id,
+    email: row.email,
+    name: row.name,
+    headline: row.headline,
+    role: row.role,
+    emailVerified: row.email_verified_at !== null,
+  };
 }
 
 export async function destroySession(): Promise<void> {

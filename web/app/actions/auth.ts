@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { query } from "@/lib/db";
-import { createSession, destroySession, hashPassword, verifyPassword } from "@/lib/auth";
+import { createSession, destroySession, hashPassword, verifyPassword, type UserRole } from "@/lib/auth";
 
 export type AuthState =
   | {
@@ -50,7 +50,9 @@ export async function signup(_state: AuthState, formData: FormData): Promise<Aut
   redirect("/dashboard");
 }
 
-export async function login(_state: AuthState, formData: FormData): Promise<AuthState> {
+// Shared login. The expected role is checked on the server after the password is verified,
+// so a student account can never log in through the employer or admin form, and vice versa.
+async function loginExpecting(formData: FormData, expected: UserRole): Promise<AuthState> {
   const email = readField(formData, "email").toLowerCase();
   const password = readField(formData, "password");
 
@@ -58,8 +60,8 @@ export async function login(_state: AuthState, formData: FormData): Promise<Auth
     return { message: "Enter your email and password." };
   }
 
-  const [user] = await query<{ id: string; password_hash: string }>(
-    "SELECT id, password_hash FROM users WHERE email = $1",
+  const [user] = await query<{ id: string; password_hash: string; role: UserRole }>(
+    "SELECT id, password_hash, role FROM users WHERE email = $1",
     [email],
   );
 
@@ -69,8 +71,29 @@ export async function login(_state: AuthState, formData: FormData): Promise<Auth
     return { message: "Email or password is incorrect." };
   }
 
+  if (user.role !== expected) {
+    const hints: Record<UserRole, string> = {
+      student: "Log in from the student login.",
+      employer: "Log in from the employer login.",
+      admin: "Log in from the admin login.",
+    };
+    return { message: `This account cannot sign in here. ${hints[user.role]}` };
+  }
+
   await createSession(user.id);
-  redirect("/dashboard");
+  redirect(expected === "student" ? "/dashboard" : `/${expected}`);
+}
+
+export async function login(_state: AuthState, formData: FormData): Promise<AuthState> {
+  return loginExpecting(formData, "student");
+}
+
+export async function employerLogin(_state: AuthState, formData: FormData): Promise<AuthState> {
+  return loginExpecting(formData, "employer");
+}
+
+export async function adminLogin(_state: AuthState, formData: FormData): Promise<AuthState> {
+  return loginExpecting(formData, "admin");
 }
 
 export async function logout(): Promise<void> {

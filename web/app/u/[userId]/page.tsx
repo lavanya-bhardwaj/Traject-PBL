@@ -6,6 +6,7 @@ import { getProfile, profileSummary } from "@/lib/profile";
 import { connectionStatus } from "@/lib/social/connections";
 import { ConnectionControls } from "./connection-controls";
 import { isUuid } from "@/lib/validation";
+import { EmptyState } from "@/components/empty-state";
 
 export default function PublicProfilePage({ params }: { params: Promise<{ userId: string }> }) {
   return (
@@ -18,6 +19,8 @@ export default function PublicProfilePage({ params }: { params: Promise<{ userId
 async function PublicProfile({ params }: { params: Promise<{ userId: string }> }) {
   const viewer = await getCurrentUser();
   if (!viewer) redirect("/login");
+  // Public student profiles are for students. Employers see only opted-in candidates in their own portal.
+  if (viewer.role !== "student") notFound();
 
   const { userId } = await params;
   if (!isUuid(userId)) notFound();
@@ -57,7 +60,12 @@ async function PublicProfile({ params }: { params: Promise<{ userId: string }> }
 
       <h2 style={{ marginTop: 32, fontSize: 22 }}>Verified skills</h2>
       {verified.length === 0 ? (
-        <p className="empty">No verified skills yet.</p>
+        <EmptyState
+          title="No verified skills yet"
+          body="Verified skills appear here after they pass a skill check."
+          actionHref="/search"
+          actionLabel="Find other candidates"
+        />
       ) : (
         <ul className="skill-list">
           {verified.map((skill) => (
