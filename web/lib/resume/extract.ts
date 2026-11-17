@@ -22,8 +22,10 @@ export function checkResumeFile(name: string, size: number, head: Uint8Array): R
 }
 
 export async function extractResumeText(bytes: Uint8Array, isPdf: boolean): Promise<string> {
+  // pdf.js takes ownership of the buffer it is given and leaves it empty, so pass a copy.
+  // Otherwise the caller would go on to store a 0-byte file.
   const raw = isPdf
-    ? (await extractText(bytes, { mergePages: true })).text
+    ? (await extractText(bytes.slice(), { mergePages: true })).text
     : new TextDecoder().decode(bytes);
   return raw.replace(/\s+/g, " ").trim().slice(0, MAX_RESUME_CHARS);
 }

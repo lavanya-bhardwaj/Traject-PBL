@@ -1,8 +1,39 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { checkResumeFile, MAX_RESUME_BYTES } from "./extract.ts";
+import { checkResumeFile, extractResumeText, MAX_RESUME_BYTES } from "./extract.ts";
 import { keywordSkills } from "./keyword-skills.ts";
 import { formatPercent, improveAction, recommendRoles, type RoleInput } from "./recommend.ts";
+
+// Smallest valid one-page PDF with a line of text.
+function tinyPdf(text: string): Uint8Array {
+  const stream = `BT /F1 11 Tf 40 750 Td (${text}) Tj ET`;
+  const objs = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 5 0 R >> >> /Contents 4 0 R >>",
+    `<< /Length ${stream.length} >>\nstream\n${stream}\nendstream`,
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+  ];
+  let out = "%PDF-1.4\n";
+  const offsets: number[] = [];
+  objs.forEach((o, i) => {
+    offsets.push(out.length);
+    out += `${i + 1} 0 obj\n${o}\nendobj\n`;
+  });
+  const xref = out.length;
+  out += `xref\n0 ${objs.length + 1}\n0000000000 65535 f \n`;
+  out += offsets.map((o) => `${String(o).padStart(10, "0")} 00000 n \n`).join("");
+  out += `trailer\n<< /Size ${objs.length + 1} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`;
+  return new TextEncoder().encode(out);
+}
+
+test("reading a PDF leaves the caller's bytes intact so the file can be stored", async () => {
+  const bytes = tinyPdf("Python and SQL developer");
+  const size = bytes.length;
+  const text = await extractResumeText(bytes, true);
+  assert.match(text, /Python and SQL developer/);
+  assert.equal(bytes.length, size);
+});
 
 test("percents are shown as whole numbers", () => {
   assert.equal(formatPercent(14.29), "14%");
