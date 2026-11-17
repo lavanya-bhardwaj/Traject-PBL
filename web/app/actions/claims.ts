@@ -5,9 +5,10 @@ import { query } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { AiNotConfiguredError } from "@/lib/ai/llm";
 import { MAX_TEXT_LENGTH, suggestSkills, type SkillSuggestion } from "@/lib/ai/skill-mapping";
+import { keywordSkills } from "@/lib/resume/keyword-skills";
 
 export type SuggestState =
-  | { message?: string; suggestions?: SkillSuggestion[]; names?: Record<string, string> }
+  | { message?: string; suggestions?: SkillSuggestion[]; names?: Record<string, string>; source?: "ai" | "keywords" }
   | undefined;
 
 export async function suggestClaims(_state: SuggestState, formData: FormData): Promise<SuggestState> {
@@ -25,19 +26,22 @@ export async function suggestClaims(_state: SuggestState, formData: FormData): P
 
   const taxonomy = await query<{ id: string; name: string }>("SELECT id, name FROM skills ORDER BY name");
 
+  const names = Object.fromEntries(taxonomy.map((skill) => [skill.id, skill.name]));
+  let suggestions: SkillSuggestion[];
+  let source: "ai" | "keywords" = "ai";
   try {
-    const suggestions = await suggestSkills(trimmed, taxonomy);
-    const names = Object.fromEntries(taxonomy.map((skill) => [skill.id, skill.name]));
-    if (suggestions.length === 0) {
-      return { message: "No skills in the list clearly matched that description. Try adding more detail." };
-    }
-    return { suggestions, names };
+    suggestions = await suggestSkills(trimmed, taxonomy);
   } catch (error) {
-    if (error instanceof AiNotConfiguredError) {
-      return { message: error.message };
-    }
-    return { message: "The AI service could not be reached. Please try again." };
+    // AI not configured or unreachable (e.g. no Ollama on the host): match skill names instead.
+    if (!(error instanceof AiNotConfiguredError)) console.error("suggestSkills failed", error);
+    suggestions = keywordSkills(trimmed, taxonomy);
+    source = "keywords";
   }
+
+  if (suggestions.length === 0) {
+    return { message: "No skills in the list clearly matched that description. Try adding more detail." };
+  }
+  return { suggestions, names, source };
 }
 
 // Saves only the skills the candidate ticked. Each ID is checked against the taxonomy again,

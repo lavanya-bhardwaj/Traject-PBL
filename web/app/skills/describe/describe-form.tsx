@@ -31,7 +31,9 @@ export function DescribeForm({ maxLength }: { maxLength: number }) {
 
       {suggest?.suggestions && (
         <form action={saveAction} style={{ marginTop: 24 }}>
-          <p className="hint">Tick the skills that fit. You can take the check later to verify each one.</p>
+          <p className="hint">
+            {suggest.source === "keywords" ? "The AI was unavailable, so these skills were matched by name. " : ""}
+            Tick the skills that fit. You can take the check later to verify each one.</p>
           {suggest.suggestions.map((item) => (
             <label key={item.skillId} className="choice" style={{ alignItems: "flex-start" }}>
               <input type="checkbox" name="skillId" value={item.skillId} defaultChecked />

@@ -10,6 +10,7 @@ export async function GET() {
   if (!resume) return new Response("Not found", { status: 404 });
 
   const bytes = await readResume(resume.storagePath);
+  if (!bytes) return new Response("Not found", { status: 404 });
   const safeName = resume.originalName.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 120) || "resume";
   return new Response(new Blob([bytes as BlobPart], { type: resume.mimeType }), {
     headers: {

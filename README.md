@@ -62,6 +62,13 @@ Traject is a competency platform for students and jobseekers. Candidates prove t
    npm run build && npm start
    ```
 
+## Deploying to Vercel
+
+- Set the project root to `web` and add `DATABASE_URL` (a hosted Postgres) in the Vercel environment variables.
+- Migrations run automatically on every deploy through the `vercel-build` script.
+- Uploaded resumes and employer documents are stored in the database, since Vercel has no persistent disk.
+- Ollama cannot run on Vercel. Set `LLM_PROVIDER=groq` and `GROQ_API_KEY` for AI features; without them, skill suggestions fall back to keyword matching and learning paths are ordered by gap size.
+
 ## Tests
 
 ```bash

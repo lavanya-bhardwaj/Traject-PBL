@@ -1,10 +1,6 @@
-// Stores each student's current resume in a private folder outside public/. Only the owner can download it.
-import { randomUUID } from "node:crypto";
-import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
-import { resolve, sep } from "node:path";
+// Stores each student's current resume privately in the database. Only the owner can download it.
+import { deleteBlob, getBlob, putBlob } from "@/lib/blobs";
 import { query } from "@/lib/db";
-
-const ROOT = resolve(process.cwd(), "private-uploads", "resumes");
 
 export type StoredResume = {
   originalName: string;
@@ -13,12 +9,6 @@ export type StoredResume = {
   uploadedAt: Date;
   storagePath: string;
 };
-
-function fullPath(storagePath: string): string {
-  const full = resolve(ROOT, storagePath);
-  if (!full.startsWith(ROOT + sep)) throw new Error("Invalid resume path");
-  return full;
-}
 
 export async function getResume(userId: string): Promise<StoredResume | null> {
   const rows = await query<{
@@ -44,10 +34,7 @@ export async function getResume(userId: string): Promise<StoredResume | null> {
 
 // Saves the file and makes it the student's current resume. The previous file is deleted.
 export async function saveResume(userId: string, bytes: Uint8Array, mimeType: string, originalName: string): Promise<void> {
-  await mkdir(ROOT, { recursive: true });
-  const ext = mimeType === "application/pdf" ? "pdf" : "txt";
-  const storagePath = `${randomUUID()}.${ext}`;
-  await writeFile(fullPath(storagePath), bytes);
+  const storagePath = await putBlob(bytes, mimeType === "application/pdf" ? "pdf" : "txt");
 
   const previous = await getResume(userId);
   await query(
@@ -58,16 +45,17 @@ export async function saveResume(userId: string, bytes: Uint8Array, mimeType: st
            size_bytes = EXCLUDED.size_bytes, storage_path = EXCLUDED.storage_path, uploaded_at = now()`,
     [userId, originalName.slice(0, 200), mimeType, bytes.length, storagePath],
   );
-  if (previous) await unlink(fullPath(previous.storagePath)).catch(() => undefined);
+  if (previous) await deleteBlob(previous.storagePath);
 }
 
-export async function readResume(storagePath: string): Promise<Uint8Array> {
-  return new Uint8Array(await readFile(fullPath(storagePath)));
+// Returns null when the bytes are missing, for example a row saved before files moved into the database.
+export async function readResume(storagePath: string): Promise<Uint8Array | null> {
+  return getBlob(storagePath);
 }
 
 export async function removeResume(userId: string): Promise<void> {
   const previous = await getResume(userId);
   if (!previous) return;
   await query("DELETE FROM resumes WHERE user_id = $1", [userId]);
-  await unlink(fullPath(previous.storagePath)).catch(() => undefined);
+  await deleteBlob(previous.storagePath);
 }

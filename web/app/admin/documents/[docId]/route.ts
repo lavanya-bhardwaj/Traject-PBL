@@ -23,6 +23,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ doc
 
   const doc = rows[0];
   const bytes = await readDocument(doc.storage_path);
+  if (!bytes) return new Response("Not found", { status: 404 });
   const safeName = doc.original_name.replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 120) || "document";
 
   return new Response(new Blob([bytes as BlobPart], { type: doc.mime_type }), {
